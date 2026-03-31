@@ -85,6 +85,39 @@ blockquote {
   padding-left:.85rem; border-left:2px solid var(--sepia-light); margin-bottom:.82rem;
 }
 .gt { font-size:.89rem; line-height:1.7; color:var(--ink-mid); }
+.sf {
+  margin-top:.85rem;
+  border:1.5px solid var(--vellum-dark);
+  border-radius:5px;
+  overflow:hidden;
+  font-size:.84rem;
+}
+.sf-head {
+  background:var(--ink); color:var(--vellum);
+  font-family:'Cormorant Garamond',serif; font-weight:600;
+  font-size:.7rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:.38rem .75rem;
+}
+.sf-row {
+  display:grid; grid-template-columns:auto auto 1fr;
+  gap:0 .65rem; align-items:baseline;
+  padding:.32rem .75rem;
+  border-top:1px solid var(--vellum-mid);
+  line-height:1.55;
+}
+.sf-row:first-of-type { border-top:none; }
+.sf-row.assumption { background:#fdf6e8; }
+.sf-row.derives    { background:#edf4ed; border-top:1.5px solid var(--d-stroke); }
+.sf-row.contra     { background:#fdf0e8; border-top:1.5px solid #c06030; }
+.sf-row.discharge  { background:var(--c-fill); border-top:1.5px solid var(--c-stroke); font-weight:500; }
+.sf-tag {
+  font-family:'Cormorant Garamond',serif; font-weight:600; font-size:.78rem;
+  color:var(--sepia); white-space:nowrap;
+}
+.sf-ref {
+  font-size:.75rem; font-style:italic; color:#888; white-space:nowrap;
+}
+.sf-text { color:var(--ink); }
 .inf {
   font-size:.78rem; font-style:italic; color:#4a8060; margin-top:.6rem;
   padding:.38rem .6rem; background:#edf4ed; border-radius:3px;
@@ -154,17 +187,17 @@ const NW=148, NH=46, NR=6, HW=NW/2, HH=NH/2;
 
 // ── Node positions (conclusion at top, premises at bottom) ─────────────────
 const NODES={
-  1: {cx:380,cy:42,  label:"God truly\nexists",                           type:'conclusion'},
-  2: {cx:165,cy:140, label:"God is\nthe GCB",                             type:'premise'},
-  3: {cx:498,cy:140, label:"The GCB exists in\nthought & reality",        type:'derived'},
-  4: {cx:262,cy:248, label:"The GCB\nexists in thought",                  type:'derived'},
-  5: {cx:556,cy:248, label:"The GCB cannot\nexist only in thought",       type:'derived'},
-  8: {cx:474,cy:348, label:"If GCB only in thought,\nit's not the GCB",  type:'derived'},
-  9: {cx:648,cy:348, label:"Impossible:\nGCB ≠ GCB",                     type:'premise'},
-  6: {cx:108,cy:452, label:"The fool\nunderstands the GCB",               type:'premise'},
-  7: {cx:278,cy:452, label:"Whatever is understood\nexists in thought",   type:'premise'},
- 10: {cx:458,cy:452, label:"Thought-things can\nbe conceived as real",    type:'premise'},
- 11: {cx:638,cy:452, label:"Existing in reality\nis greater",             type:'premise'},
+  1: {cx:380,cy:42,  label:"God truly exists.",                                                         type:'conclusion'},
+  2: {cx:165,cy:140, label:"God is the GCB.",                                                           type:'premise'},
+  3: {cx:498,cy:140, label:"The GCB exists in\nboth thought and reality.",                              type:'derived'},
+  4: {cx:262,cy:248, label:"The GCB exists\nin thought.",                                               type:'derived'},
+  5: {cx:556,cy:248, label:"The GCB cannot exist\nonly in thought.",                                    type:'derived'},
+  8: {cx:474,cy:348, label:"If the GCB exists only in thought,\nthen the GCB is not the GCB.",         type:'derived'},
+  9: {cx:648,cy:348, label:"It is impossible for the GCB\nto not be the GCB.",                         type:'premise'},
+  6: {cx:108,cy:452, label:"The fool\nunderstands the GCB.",                                            type:'premise'},
+  7: {cx:278,cy:452, label:"Whatever is understood\nexists in thought.",                                type:'premise'},
+ 10: {cx:458,cy:452, label:"If something exists only in thought,\nit could also be conceived as real.", type:'premise'},
+ 11: {cx:638,cy:452, label:"Existing in reality is greater\nthan existing only in thought.",            type:'premise'},
 };
 
 // ── Edges (from premise to derived/conclusion) ─────────────────────────────
@@ -233,10 +266,10 @@ const TOUR=[
   },
   {
     nid:11,
-    title:"Existing in Reality Is Greater",
+    title:"Existing in Reality Is Greater Than Existing Only in Thought",
     claim:"A being that exists in reality is greater than an otherwise identical being that exists only in the understanding.",
-    quote:"If that than which nothing greater can be conceived exists in the understanding alone, the very being than which nothing greater can be conceived is one than which a greater can be conceived.",
-    gloss:"Real existence adds something to a being — it is a kind of greatness or perfection. A merely imagined treasure and a real treasure are not the same. The imagined version can always be surpassed by the real version with otherwise identical properties.",
+    quote:"For if it exists only in the understanding, it can be conceived to exist in reality too, which is greater.",
+    gloss:"This is a stand-alone premise Anselm treats as self-evident: real existence is a kind of greatness or perfection. A merely imagined perfect island and an actual perfect island are not equally great — the real one is greater. This principle is what makes the reductio work: if you can always improve a thing by making it real, then a being defined as greatest cannot be confined to thought alone.",
     inf:null, an:[11], ae:[]
   },
   {
@@ -261,8 +294,40 @@ const TOUR=[
     title:"The GCB Cannot Exist Only in Thought",
     claim:"The GCB cannot be a merely mental object. It must also exist in reality.",
     quote:"Obviously this is impossible. Hence, there is no doubt that there exists a being than which nothing greater can be conceived.",
-    gloss:"Node 8 established: if the GCB is only in thought, it fails to be the GCB. Node 9 established: the GCB cannot fail to be the GCB. Put them together: the assumption that the GCB is only in thought produces a direct contradiction. It cannot be so.",
-    inf:"Derived from: If GCB only in thought, it's not the GCB  ＋  Impossible: GCB ≠ GCB",
+    gloss:`This conclusion is reached by a <em>reductio ad absurdum</em>: we temporarily assume the opposite of what we want to prove, show it leads to a contradiction, and conclude the assumption must be false.
+
+<div class="sf">
+  <div class="sf-head">Reductio ad Absurdum — Standard Form</div>
+  <div class="sf-row assumption">
+    <span class="sf-tag">Assume (A)</span><span class="sf-ref"></span>
+    <span class="sf-text">The GCB exists only in thought.</span>
+  </div>
+  <div class="sf-row">
+    <span class="sf-tag">P1</span><span class="sf-ref">node 10</span>
+    <span class="sf-text">If something exists only in thought, it could also be conceived as existing in reality.</span>
+  </div>
+  <div class="sf-row">
+    <span class="sf-tag">P2</span><span class="sf-ref">node 11</span>
+    <span class="sf-text">Existing in reality is greater than existing only in thought.</span>
+  </div>
+  <div class="sf-row derives">
+    <span class="sf-tag">∴</span><span class="sf-ref">node 8, from A, P1, P2</span>
+    <span class="sf-text">If the GCB exists only in thought, then the GCB is not the GCB — something greater can be conceived of it.</span>
+  </div>
+  <div class="sf-row">
+    <span class="sf-tag">P3</span><span class="sf-ref">node 9</span>
+    <span class="sf-text">It is impossible for the GCB to not be the GCB.</span>
+  </div>
+  <div class="sf-row contra">
+    <span class="sf-tag">✕ Contradiction</span><span class="sf-ref">node 8 &amp; node 9</span>
+    <span class="sf-text">The assumption (A) leads directly to an impossibility.</span>
+  </div>
+  <div class="sf-row discharge">
+    <span class="sf-tag">∴</span><span class="sf-ref">node 5, discharge A</span>
+    <span class="sf-text">The assumption is false: the GCB cannot exist only in thought.</span>
+  </div>
+</div>`,
+    inf:"Derived from: If the GCB exists only in thought, then the GCB is not the GCB  ＋  It is impossible for the GCB to not be the GCB",
     an:[5,8,9], ae:['e85','e95']
   },
   {
@@ -430,7 +495,7 @@ function update(){
   s.quote?(document.getElementById('qt').textContent='\u201c'+s.quote+'\u201d',qs.style.display=''):(qs.style.display='none');
 
   const gs=document.getElementById('gs');
-  s.gloss?(document.getElementById('gt').textContent=s.gloss,gs.style.display=''):(gs.style.display='none');
+  s.gloss?(document.getElementById('gt').innerHTML=s.gloss,gs.style.display=''):(gs.style.display='none');
 
   const infEl=document.getElementById('inf');
   s.inf?(infEl.textContent='\u22a2 '+s.inf,infEl.style.display=''):(infEl.style.display='none');
