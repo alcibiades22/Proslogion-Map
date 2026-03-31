@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proslogion II — Argument Map Walk-Through</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --vellum: #f4eed9;
+  --vellum-mid: #eadfc3;
+  --vellum-dark: #d6c9a2;
+  --ink: #18100a;
+  --ink-mid: #3d280f;
+  --sepia: #8a5f2e;
+  --sepia-light: #c09a50;
+  --sepia-pale: #f8f0df;
+  --p-fill: #edf3f9; --p-stroke: #5a7ea8; --p-text: #162840;
+  --d-fill: #edf4ed; --d-stroke: #4e8460; --d-text: #152815;
+  --c-fill: #fefae8; --c-stroke: #b89018; --c-text: #302000;
+  --a-fill: #fff8e0; --a-stroke: #c07000; --a-text: #3a2000;
+  --e-dim: #d0c4a0; --e-act: #c07000; --e-sup: #6a9a70;
+}
+body { background: var(--vellum); font-family: 'EB Garamond', Georgia, serif; color: var(--ink); }
+
+header {
+  background: var(--ink); color: var(--vellum);
+  padding: 1.7rem 2.2rem 1.5rem; position: relative; overflow: hidden;
+}
+header::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(-45deg,transparent,transparent 28px,rgba(255,255,255,.018) 28px,rgba(255,255,255,.018) 30px);
+}
+.hr { width: 42px; height: 3px; background: var(--sepia-light); margin-bottom: .75rem; }
+.ey { font-style: italic; font-size: .87rem; color: var(--sepia-light); margin-bottom: .3rem; letter-spacing: .04em; }
+h1  { font-family: 'Cormorant Garamond',serif; font-weight:600; font-size:1.8rem; line-height:1.15; color:var(--vellum); margin-bottom:.4rem; }
+.hd { font-size: .93rem; color:#bfa87e; line-height:1.6; max-width:580px; }
+
+.layout {
+  display: grid; grid-template-columns: 1fr 370px; min-height: 590px;
+}
+@media(max-width:820px){ .layout{ grid-template-columns:1fr; } }
+
+/* MAP PANE */
+.mp { padding:1.1rem 1rem 1rem 1.8rem; border-right:1px solid var(--vellum-dark); }
+.pl {
+  font-family:'Cormorant Garamond',serif; font-size:.7rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--sepia);
+  margin-bottom:.55rem; padding-bottom:.3rem; border-bottom:1px solid var(--vellum-dark);
+}
+#argmap { width:100%; height:auto; display:block; }
+.leg { display:flex; gap:1.1rem; margin-top:.55rem; flex-wrap:wrap; }
+.li  { display:flex; align-items:center; gap:.38rem; font-size:.77rem; color:var(--ink-mid); }
+.ld  { width:10px; height:10px; border-radius:2px; border:2px solid; }
+.ld.p{ background:var(--p-fill); border-color:var(--p-stroke); }
+.ld.d{ background:var(--d-fill); border-color:var(--d-stroke); }
+.ld.c{ background:var(--c-fill); border-color:var(--c-stroke); }
+
+/* DETAIL PANE */
+.dp {
+  background:#fffdf7; border-left:1px solid var(--vellum-dark);
+  padding:1.25rem 1.45rem 1.1rem; display:flex; flex-direction:column; min-height:590px;
+}
+.sc {
+  font-family:'Cormorant Garamond',serif; font-size:.7rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--sepia); margin-bottom:.38rem;
+}
+.st {
+  font-family:'Cormorant Garamond',serif; font-weight:600; font-size:1.38rem;
+  line-height:1.2; color:var(--ink); margin-bottom:.8rem;
+  padding-bottom:.55rem; border-bottom:1px solid var(--vellum-dark);
+}
+.cb {
+  font-size:.98rem; line-height:1.62; color:var(--ink);
+  background:var(--sepia-pale); border-left:3px solid var(--sepia);
+  padding:.62rem .88rem; border-radius:0 3px 3px 0; margin-bottom:.85rem;
+}
+.ql, .gl {
+  font-family:'Cormorant Garamond',serif; font-size:.7rem; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--sepia); margin-bottom:.32rem;
+}
+blockquote {
+  font-style:italic; font-size:.92rem; line-height:1.65; color:var(--ink-mid);
+  padding-left:.85rem; border-left:2px solid var(--sepia-light); margin-bottom:.82rem;
+}
+.gt { font-size:.89rem; line-height:1.7; color:var(--ink-mid); }
+.inf {
+  font-size:.78rem; font-style:italic; color:#4a8060; margin-top:.6rem;
+  padding:.38rem .6rem; background:#edf4ed; border-radius:3px;
+  border-left:2px solid var(--d-stroke);
+}
+.spacer { flex:1; }
+.nav {
+  display:flex; gap:.7rem; margin-top:1rem; padding-top:.85rem;
+  border-top:1px solid var(--vellum-dark);
+}
+.btn {
+  font-family:'Cormorant Garamond',serif; font-size:.95rem; font-weight:600;
+  padding:.5rem 1.05rem; border:none; border-radius:4px; cursor:pointer;
+  letter-spacing:.02em; transition:background .12s,transform .1s;
+}
+.btn:hover:not(:disabled){ transform:translateY(-1px); }
+.btn:disabled{ opacity:.28; cursor:not-allowed; }
+.bp{ background:var(--ink); color:var(--vellum); }
+.bp:hover:not(:disabled){ background:#2e1e0e; }
+.bs{ background:transparent; color:var(--sepia); border:2px solid var(--sepia); }
+.bs:hover:not(:disabled){ background:var(--sepia-pale); }
+.dots{ display:flex; gap:5px; flex-wrap:wrap; margin-top:.65rem; align-items:center; }
+.dot{ width:7px; height:7px; border-radius:50%; background:var(--vellum-dark); cursor:pointer; transition:background .15s; }
+.dot.v{ background:var(--sepia-light); }
+.dot.a{ background:var(--sepia); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hr"></div>
+  <div class="ey">Anselm of Canterbury · Proslogion, Chapter II · c. 1078 CE</div>
+  <h1>The Ontological Argument — Argument Map</h1>
+  <p class="hd">Walk through each of the 11 propositions in Anselm's proof. For each node, see the original Anselmian text and a plain-English explanation of its role in the argument.</p>
+</header>
+
+<div class="layout">
+  <div class="mp">
+    <div class="pl">Argument map — click any node to jump to it</div>
+    <svg id="argmap" viewBox="0 0 730 500" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="leg">
+      <div class="li"><div class="ld p"></div><span>Premise</span></div>
+      <div class="li"><div class="ld d"></div><span>Derived claim</span></div>
+      <div class="li"><div class="ld c"></div><span>Conclusion</span></div>
+    </div>
+  </div>
+
+  <div class="dp">
+    <div class="sc" id="sc">Step 1 of 12</div>
+    <div class="st" id="st"></div>
+    <div class="cb" id="cb" style="display:none"></div>
+    <div id="qs" style="display:none"><div class="ql">Anselm writes:</div><blockquote id="qt"></blockquote></div>
+    <div id="gs" style="display:none"><div class="gl">What this means:</div><p class="gt" id="gt"></p></div>
+    <div class="inf" id="inf" style="display:none"></div>
+    <div class="spacer"></div>
+    <div class="nav">
+      <button class="btn bs" id="pb" onclick="prev()">← Back</button>
+      <button class="btn bp" id="nb" onclick="next()">Next →</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<script>
+// ── Layout constants ───────────────────────────────────────────────────────
+const NW=148, NH=46, NR=6, HW=NW/2, HH=NH/2;
+
+// ── Node positions (conclusion at top, premises at bottom) ─────────────────
+const NODES={
+  1: {cx:380,cy:42,  label:"God truly\nexists",                           type:'conclusion'},
+  2: {cx:165,cy:140, label:"God is\nthe GCB",                             type:'premise'},
+  3: {cx:498,cy:140, label:"The GCB exists in\nthought & reality",        type:'derived'},
+  4: {cx:262,cy:248, label:"The GCB\nexists in thought",                  type:'derived'},
+  5: {cx:556,cy:248, label:"The GCB cannot\nexist only in thought",       type:'derived'},
+  8: {cx:474,cy:348, label:"If GCB only in thought,\nit's not the GCB",  type:'derived'},
+  9: {cx:648,cy:348, label:"Impossible:\nGCB ≠ GCB",                     type:'premise'},
+  6: {cx:108,cy:452, label:"The fool\nunderstands the GCB",               type:'premise'},
+  7: {cx:278,cy:452, label:"Whatever is understood\nexists in thought",   type:'premise'},
+ 10: {cx:458,cy:452, label:"Thought-things can\nbe conceived as real",    type:'premise'},
+ 11: {cx:638,cy:452, label:"Existing in reality\nis greater",             type:'premise'},
+};
+
+// ── Edges (from premise to derived/conclusion) ─────────────────────────────
+const EDGES=[
+  {f:6, t:4,  id:'e64' },
+  {f:7, t:4,  id:'e74' },
+  {f:10,t:8,  id:'e108'},
+  {f:11,t:8,  id:'e118'},
+  {f:8, t:5,  id:'e85' },
+  {f:9, t:5,  id:'e95' },
+  {f:4, t:3,  id:'e43' },
+  {f:5, t:3,  id:'e53' },
+  {f:2, t:1,  id:'e21' },
+  {f:3, t:1,  id:'e31' },
+];
+
+// ── Tour steps (logical order: premises → derived → conclusion) ────────────
+const TOUR=[
+  {
+    nid:null,
+    title:"The Argument as a Whole",
+    claim:null, quote:null, inf:null,
+    gloss:"The argument map for Anselm's Ontological Argument has 11 claims. Claims acting as premises only (blue, bottom) support derived claims (green), which together establish the conclusion (gold, top). Use the navigation to walk through each claim and subargument, or click any node on the map to jump directly to it.",
+    an:[], ae:[]
+  },
+  {
+    nid:2,
+    title:"God Is the Greatest Conceivable Being",
+    claim:"God is defined as the being than which nothing greater can be conceived — the GCB.",
+    quote:"We believe You to be that than which nothing greater can be conceived.",
+    gloss:"The argument starts with a definition, not an empirical claim. The GCB is whatever being cannot be surpassed in greatness. Crucially, this is a conceptual starting point that both believer and skeptic can share before the argument begins.",
+    inf:null, an:[2], ae:[]
+  },
+  {
+    nid:6,
+    title:"The Fool Understands the GCB",
+    claim:"Even a skeptic who denies God's existence understands what is meant by the GCB.",
+    quote:"Even the fool is convinced that something exists in the understanding, at least, than which nothing greater can be conceived. For when he hears of this being, he understands what he hears.",
+    gloss:"Anselm's 'fool' is the Psalmist's atheist — someone who says 'there is no God.' The point isn't that the fool believes in God. It's that he grasps the concept when it's described. Understanding the claim is all the argument needs from the skeptic.",
+    inf:null, an:[6], ae:[]
+  },
+  {
+    nid:7,
+    title:"Whatever Is Understood Exists in Thought",
+    claim:"Anything we grasp mentally — real or fictional — exists at minimum in the understanding.",
+    quote:"When a painter first conceives of what he will afterwards paint, he has it in his understanding, but does not yet understand it to exist, because he has not yet painted it.",
+    gloss:"Anselm draws a key distinction between two modes of existence: in the understanding (in intellectu) and in reality (in re). A dragon in a story and a real dragon both exist 'in thought.' Only the real one exists in both. Whatever we can grasp mentally has at least the first kind of existence.",
+    inf:null, an:[7], ae:[]
+  },
+  {
+    nid:4,
+    title:"The GCB Exists in Thought",
+    claim:"The GCB exists at least in the understanding — as a concept grasped by both believer and skeptic.",
+    quote:"Hence, even the fool is convinced that something exists in the understanding, at least, than which nothing greater can be conceived.",
+    gloss:"This follows from the two preceding premises. Since the fool understands the GCB (node 6), and whatever is understood exists in thought (node 7), the GCB at minimum exists as a mental object. Anselm and the atheist agree on this much.",
+    inf:"Derived from: The fool understands the GCB  ＋  Whatever is understood exists in thought",
+    an:[4,6,7], ae:['e64','e74']
+  },
+  {
+    nid:10,
+    title:"Thought-Things Can Be Conceived as Real",
+    claim:"If something exists only in thought, we can also conceive of it as existing in reality.",
+    quote:"It is one thing for an object to exist in the understanding, and another to understand that the object actually exists.",
+    gloss:"These are distinct modes of existence that we can apply to the same object. Nothing prevents us from taking something that exists only as an idea and conceiving of that same thing as if it existed in reality. Anselm's painter again: a painting first lives in thought, then in the world.",
+    inf:null, an:[10], ae:[]
+  },
+  {
+    nid:11,
+    title:"Existing in Reality Is Greater",
+    claim:"A being that exists in reality is greater than an otherwise identical being that exists only in the understanding.",
+    quote:"If that than which nothing greater can be conceived exists in the understanding alone, the very being than which nothing greater can be conceived is one than which a greater can be conceived.",
+    gloss:"Real existence adds something to a being — it is a kind of greatness or perfection. A merely imagined treasure and a real treasure are not the same. The imagined version can always be surpassed by the real version with otherwise identical properties.",
+    inf:null, an:[11], ae:[]
+  },
+  {
+    nid:8,
+    title:"If the GCB Is Only in Thought, It Is Not the GCB",
+    claim:"If the GCB existed only in the mind, we could conceive of something greater than it — so it would fail to be the GCB.",
+    quote:"If that than which nothing greater can be conceived exists in the understanding alone, this very being than which nothing greater can be conceived is one than which a greater can be conceived — which is absurd.",
+    gloss:"Combine nodes 10 and 11: a mind-only thing can be conceived as real (10), and a real version is greater than a mind-only version (11). So a mind-only GCB could always be surpassed by its real counterpart — meaning it was never truly the greatest conceivable being. The concept self-defeats.",
+    inf:"Derived from: Thought-things can be conceived as real  ＋  Existing in reality is greater",
+    an:[8,10,11], ae:['e108','e118']
+  },
+  {
+    nid:9,
+    title:"Impossible: The GCB Cannot Fail to Be the GCB",
+    claim:"It is logically impossible for the greatest conceivable being to not be the greatest conceivable being.",
+    quote:"That than which nothing greater can be conceived cannot be conceived not to exist.",
+    gloss:"This follows from the definition alone. The GCB is whatever is greatest by definition — it cannot be surpassed without contradiction. Just as a bachelor cannot be married, the GCB cannot coherently be 'not the greatest.' This is a logical necessity, not an empirical one.",
+    inf:null, an:[9], ae:[]
+  },
+  {
+    nid:5,
+    title:"The GCB Cannot Exist Only in Thought",
+    claim:"The GCB cannot be a merely mental object. It must also exist in reality.",
+    quote:"Obviously this is impossible. Hence, there is no doubt that there exists a being than which nothing greater can be conceived.",
+    gloss:"Node 8 established: if the GCB is only in thought, it fails to be the GCB. Node 9 established: the GCB cannot fail to be the GCB. Put them together: the assumption that the GCB is only in thought produces a direct contradiction. It cannot be so.",
+    inf:"Derived from: If GCB only in thought, it's not the GCB  ＋  Impossible: GCB ≠ GCB",
+    an:[5,8,9], ae:['e85','e95']
+  },
+  {
+    nid:2,
+    title:"God Is the Greatest Conceivable Being",
+    claim:"God is defined as the being than which nothing greater can be conceived — the GCB.",
+    quote:"We believe You to be that than which nothing greater can be conceived.",
+    gloss:"With both inferential chains now established, we can introduce this premise: God just is the GCB, by definition. This is a conceptual starting point that both believer and skeptic can share — the argument doesn't assume God exists, it starts with what we mean by the word.",
+    inf:null, an:[2], ae:[]
+  },
+  {
+    nid:3,
+    title:"The GCB Exists in Both Thought and Reality",
+    claim:"The greatest conceivable being exists not merely as an idea but as a genuinely real being.",
+    quote:"And it assuredly exists so truly, that it cannot be conceived not to exist.",
+    gloss:"We've now established that the GCB exists in thought (node 4) and that it cannot be only in thought (node 5). The only option remaining: it exists in both modes — in the understanding and in reality.",
+    inf:"Derived from: The GCB exists in thought  ＋  The GCB cannot exist only in thought",
+    an:[3,4,5], ae:['e43','e53']
+  },
+  {
+    nid:1,
+    title:"God Truly Exists",
+    claim:"God — the greatest conceivable being — truly exists in reality, not merely as a concept.",
+    quote:"This being thou art, O Lord, our God.",
+    gloss:"The final step closes the argument. God just is the GCB (node 2), and the GCB must exist in reality (node 3). Therefore God exists in reality. Anselm believes he has shown that denying God's existence is a logical self-contradiction — not merely a theological error.",
+    inf:"Derived from: God is the GCB  ＋  The GCB exists in both thought and reality",
+    an:[1,2,3], ae:['e21','e31']
+  },
+];
+
+// ── State ──────────────────────────────────────────────────────────────────
+let step=0;
+const vis=new Set([0]);
+
+// ── SVG helpers ────────────────────────────────────────────────────────────
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs){
+  const e=document.createElementNS(NS,tag);
+  for(const[k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
+}
+
+function nodeColors(type,isFocus){
+  if(isFocus) return {f:'var(--a-fill)',s:'var(--a-stroke)',t:'var(--a-text)',sw:2.5};
+  if(type==='conclusion') return {f:'var(--c-fill)',s:'var(--c-stroke)',t:'var(--c-text)',sw:2};
+  if(type==='derived')    return {f:'var(--d-fill)',s:'var(--d-stroke)',t:'var(--d-text)',sw:1.5};
+  return {f:'var(--p-fill)',s:'var(--p-stroke)',t:'var(--p-text)',sw:1.5};
+}
+
+function addLines(g,text,cx,cy,fs,fill){
+  const lines=text.split('\n');
+  const lh=fs*1.4;
+  const sy=cy-lh*(lines.length-1)/2;
+  lines.forEach((ln,i)=>{
+    const t=el('text',{x:cx,y:sy+i*lh,'text-anchor':'middle',
+      'dominant-baseline':'middle','font-family':'EB Garamond,Georgia,serif',
+      'font-size':fs,fill,'pointer-events':'none'});
+    t.textContent=ln;
+    g.appendChild(t);
+  });
+}
+
+// ── SVG render ─────────────────────────────────────────────────────────────
+function buildSVG(){
+  const svg=document.getElementById('argmap');
+  svg.innerHTML='';
+
+  // arrowhead markers
+  const defs=el('defs',{});
+  [['arr-d','#c0b488'],['arr-a','#c07000'],['arr-s','#6a9a70']].forEach(([id,col])=>{
+    const m=el('marker',{id,'markerWidth':9,'markerHeight':7,'refX':8,'refY':3.5,
+      'orient':'auto','markerUnits':'userSpaceOnUse'});
+    m.appendChild(el('path',{d:'M0,0 L0,7 L9,3.5 z',fill:col}));
+    defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  const s=TOUR[step];
+  const an=new Set(s.an);
+  const ae=new Set(s.ae);
+  const hasActive=s.nid!==null;
+
+  // ── Draw edges first (behind nodes)
+  EDGES.forEach(e=>{
+    const src=NODES[e.f], tgt=NODES[e.t];
+    const isAct=ae.has(e.id);
+    const isSup=!isAct&&an.has(e.f)&&an.has(e.t);
+    const dim=hasActive&&!isAct&&!isSup;
+
+    // arrow goes from top of source node to bottom of target node
+    const x1=src.cx, y1=src.cy-HH;
+    const x2=tgt.cx, y2=tgt.cy+HH;
+    const dy=Math.abs(y1-y2);
+    // cubic bezier: control points pull inward
+    const d=`M${x1},${y1} C${x1},${y1-dy*.38} ${x2},${y2+dy*.38} ${x2},${y2}`;
+
+    svg.appendChild(el('path',{
+      d,
+      stroke:isAct?'var(--e-act)':(isSup?'var(--e-sup)':'var(--e-dim)'),
+      'stroke-width':isAct?2:1.3,
+      fill:'none',
+      'marker-end':isAct?'url(#arr-a)':(isSup?'url(#arr-s)':'url(#arr-d)'),
+      opacity:dim?.18:.88,
+    }));
+  });
+
+  // ── Draw nodes on top of edges
+  Object.entries(NODES).forEach(([ids,n])=>{
+    const id=parseInt(ids);
+    const isFocus=id===s.nid;
+    const inGroup=an.has(id);
+    const dim=hasActive&&!inGroup;
+    const c=nodeColors(n.type,isFocus);
+
+    const g=el('g',{cursor:'pointer',opacity:dim?.2:1});
+    g.addEventListener('click',()=>jumpTo(id));
+
+    // glow behind focused node
+    if(isFocus){
+      g.appendChild(el('rect',{
+        x:n.cx-HW-6,y:n.cy-HH-6,width:NW+12,height:NH+12,rx:NR+4,
+        fill:'rgba(192,112,0,.14)',
+      }));
+    }
+
+    // node rectangle
+    g.appendChild(el('rect',{
+      x:n.cx-HW,y:n.cy-HH,width:NW,height:NH,rx:NR,
+      fill:c.f,stroke:c.s,'stroke-width':c.sw,
+    }));
+
+    // node number (top-left corner)
+    const numT=el('text',{x:n.cx-HW+6,y:n.cy-HH+10,'text-anchor':'start',
+      'dominant-baseline':'middle','font-family':'Cormorant Garamond,Georgia,serif',
+      'font-weight':'600','font-size':9,fill:isFocus?'var(--a-stroke)':c.s,
+      'pointer-events':'none','opacity':'.85'});
+    numT.textContent=id;
+    g.appendChild(numT);
+
+    // label text (centered, shifted down slightly to make room)
+    addLines(g,n.label,n.cx,n.cy+4,isFocus?11:10,c.t);
+    svg.appendChild(g);
+  });
+}
+
+// ── Jump to a node by clicking the map ────────────────────────────────────
+function jumpTo(id){
+  const idx=TOUR.findIndex(s=>s.nid===id);
+  if(idx>=0){ step=idx; update(); }
+}
+
+// ── Update UI ──────────────────────────────────────────────────────────────
+function update(){
+  const s=TOUR[step];
+  vis.add(step);
+  buildSVG();
+
+  document.getElementById('sc').textContent=`Step ${step+1} of ${TOUR.length}`;
+  document.getElementById('st').textContent=s.title;
+
+  const cb=document.getElementById('cb');
+  s.claim?(cb.textContent=s.claim,cb.style.display=''):(cb.style.display='none');
+
+  const qs=document.getElementById('qs');
+  s.quote?(document.getElementById('qt').textContent='\u201c'+s.quote+'\u201d',qs.style.display=''):(qs.style.display='none');
+
+  const gs=document.getElementById('gs');
+  s.gloss?(document.getElementById('gt').textContent=s.gloss,gs.style.display=''):(gs.style.display='none');
+
+  const infEl=document.getElementById('inf');
+  s.inf?(infEl.textContent='\u22a2 '+s.inf,infEl.style.display=''):(infEl.style.display='none');
+
+  document.getElementById('pb').disabled=step===0;
+  const nb=document.getElementById('nb');
+  nb.textContent=step===TOUR.length-1?'Done \u2713':'Next \u2192';
+
+  // step dots
+  const dotsEl=document.getElementById('dots');
+  dotsEl.innerHTML='';
+  TOUR.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===step?' a':(vis.has(i)?' v':''));
+    d.title=`Step ${i+1}`;
+    d.onclick=()=>{step=i;update();};
+    dotsEl.appendChild(d);
+  });
+}
+
+function next(){ if(step<TOUR.length-1){ step++; update(); } }
+function prev(){ if(step>0){ step--; update(); } }
+
+update();
+</script>
+</body>
+</html>
