@@ -200,18 +200,13 @@ const NODES={
  11: {cx:638,cy:452, label:"Existing in reality is greater\nthan existing only in thought.",            type:'premise'},
 };
 
-// ── Edges (from premise to derived/conclusion) ─────────────────────────────
-const EDGES=[
-  {f:6, t:4,  id:'e64' },
-  {f:7, t:4,  id:'e74' },
-  {f:10,t:8,  id:'e108'},
-  {f:11,t:8,  id:'e118'},
-  {f:8, t:5,  id:'e85' },
-  {f:9, t:5,  id:'e95' },
-  {f:4, t:3,  id:'e43' },
-  {f:5, t:3,  id:'e53' },
-  {f:2, t:1,  id:'e21' },
-  {f:3, t:1,  id:'e31' },
+// ── Linked premise pairs (bracket + single arrow to target) ────────────────
+const LINKS=[
+  {srcs:[6,7],   tgt:4, id:'l67_4'  },
+  {srcs:[10,11], tgt:8, id:'l1011_8'},
+  {srcs:[8,9],   tgt:5, id:'l89_5'  },
+  {srcs:[4,5],   tgt:3, id:'l45_3'  },
+  {srcs:[2,3],   tgt:1, id:'l23_1'  },
 ];
 
 // ── Tour steps (logical order: premises → derived → conclusion) ────────────
@@ -254,7 +249,7 @@ const TOUR=[
     quote:"Hence, even the fool is convinced that something exists in the understanding, at least, than which nothing greater can be conceived.",
     gloss:"This follows from the two preceding premises. Since the fool understands the GCB (node 6), and whatever is understood exists in thought (node 7), the GCB at minimum exists as a mental object. Anselm and the atheist agree on this much.",
     inf:"Derived from: The fool understands the GCB  ＋  Whatever is understood exists in thought",
-    an:[4,6,7], ae:['e64','e74']
+    an:[4,6,7], ae:['l67_4']
   },
   {
     nid:10,
@@ -279,7 +274,7 @@ const TOUR=[
     quote:"If that than which nothing greater can be conceived exists in the understanding alone, this very being than which nothing greater can be conceived is one than which a greater can be conceived — which is absurd.",
     gloss:"Combine nodes 10 and 11: a mind-only thing can be conceived as real (10), and a real version is greater than a mind-only version (11). So a mind-only GCB could always be surpassed by its real counterpart — meaning it was never truly the greatest conceivable being. The concept self-defeats.",
     inf:"Derived from: Thought-things can be conceived as real  ＋  Existing in reality is greater",
-    an:[8,10,11], ae:['e108','e118']
+    an:[8,10,11], ae:['l1011_8']
   },
   {
     nid:9,
@@ -328,7 +323,7 @@ const TOUR=[
   </div>
 </div>`,
     inf:"Derived from: If the GCB exists only in thought, then the GCB is not the GCB  ＋  It is impossible for the GCB to not be the GCB",
-    an:[5,8,9], ae:['e85','e95']
+    an:[5,8,9], ae:['l89_5']
   },
   {
     nid:2,
@@ -345,7 +340,7 @@ const TOUR=[
     quote:"And it assuredly exists so truly, that it cannot be conceived not to exist.",
     gloss:"We've now established that the GCB exists in thought (node 4) and that it cannot be only in thought (node 5). The only option remaining: it exists in both modes — in the understanding and in reality.",
     inf:"Derived from: The GCB exists in thought  ＋  The GCB cannot exist only in thought",
-    an:[3,4,5], ae:['e43','e53']
+    an:[3,4,5], ae:['l45_3']
   },
   {
     nid:1,
@@ -354,7 +349,7 @@ const TOUR=[
     quote:"This being thou art, O Lord, our God.",
     gloss:"The final step closes the argument. God just is the GCB (node 2), and the GCB must exist in reality (node 3). Therefore God exists in reality. Anselm believes he has shown that denying God's existence is a logical self-contradiction — not merely a theological error.",
     inf:"Derived from: God is the GCB  ＋  The GCB exists in both thought and reality",
-    an:[1,2,3], ae:['e21','e31']
+    an:[1,2,3], ae:['l23_1']
   },
 ];
 
@@ -410,27 +405,46 @@ function buildSVG(){
   const ae=new Set(s.ae);
   const hasActive=s.nid!==null;
 
-  // ── Draw edges first (behind nodes)
-  EDGES.forEach(e=>{
-    const src=NODES[e.f], tgt=NODES[e.t];
-    const isAct=ae.has(e.id);
-    const isSup=!isAct&&an.has(e.f)&&an.has(e.t);
+  // ── Draw linked-premise brackets (behind nodes)
+  LINKS.forEach(lk=>{
+    const s0=NODES[lk.srcs[0]], s1=NODES[lk.srcs[1]], tgt=NODES[lk.tgt];
+    const isAct=ae.has(lk.id);
+    const isSup=!isAct && lk.srcs.every(id=>an.has(id)) && an.has(lk.tgt);
     const dim=hasActive&&!isAct&&!isSup;
 
-    // arrow goes from top of source node to bottom of target node
-    const x1=src.cx, y1=src.cy-HH;
-    const x2=tgt.cx, y2=tgt.cy+HH;
-    const dy=Math.abs(y1-y2);
-    // cubic bezier: control points pull inward
-    const d=`M${x1},${y1} C${x1},${y1-dy*.38} ${x2},${y2+dy*.38} ${x2},${y2}`;
+    const col = isAct ? 'var(--e-act)' : (isSup ? 'var(--e-sup)' : 'var(--e-dim)');
+    const sw  = isAct ? 2 : 1.3;
+    const op  = dim ? .15 : .9;
+    const marker = isAct ? 'url(#arr-a)' : (isSup ? 'url(#arr-s)' : 'url(#arr-d)');
 
+    // bracket sits 14px above the top of the source nodes
+    const bracketY = s0.cy - HH - 14;
+    const x0 = s0.cx;
+    const x1 = s1.cx;
+    const midX = (x0 + x1) / 2;
+
+    // vertical stub from top of each source up to bracket
+    [x0, x1].forEach(x => {
+      svg.appendChild(el('line',{
+        x1:x, y1:NODES[lk.srcs[x===x0?0:1]].cy - HH,
+        x2:x, y2:bracketY,
+        stroke:col, 'stroke-width':sw, opacity:op,
+      }));
+    });
+
+    // horizontal bracket bar
+    svg.appendChild(el('line',{
+      x1:x0, y1:bracketY, x2:x1, y2:bracketY,
+      stroke:col, 'stroke-width':sw, opacity:op,
+    }));
+
+    // single arrow from bracket midpoint up to bottom of target
+    const ty = tgt.cy + HH;
+    const dy = Math.abs(bracketY - ty);
+    const d = `M${midX},${bracketY} C${midX},${bracketY - dy*.4} ${tgt.cx},${ty + dy*.4} ${tgt.cx},${ty}`;
     svg.appendChild(el('path',{
-      d,
-      stroke:isAct?'var(--e-act)':(isSup?'var(--e-sup)':'var(--e-dim)'),
-      'stroke-width':isAct?2:1.3,
-      fill:'none',
-      'marker-end':isAct?'url(#arr-a)':(isSup?'url(#arr-s)':'url(#arr-d)'),
-      opacity:dim?.18:.88,
+      d, stroke:col, 'stroke-width':sw, fill:'none',
+      'marker-end':marker, opacity:op,
     }));
   });
 
